@@ -3,10 +3,13 @@
 #include <string>
 #include <stdint.h>
 #include <netinet/in.h>
-#define N 256
+#include <iostream>
 
+#define N 256
+class State;
 class Packet
 {
+    friend std::ostream &operator<<(std::ostream &out, State s);
 
 private:
     bool ACKd;
@@ -27,6 +30,8 @@ protected:
 };
 class State
 {
+    friend std::ostream &operator<<(std::ostream &out, State s);
+
 private:
     std::vector<Packet *> packets;
     struct sockaddr_in cliaddr;

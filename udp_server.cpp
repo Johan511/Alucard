@@ -9,7 +9,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
-
 #include "./0_headers/state/map.h"
 
 #define TRUE 1
@@ -64,8 +63,7 @@ int main()
             //     Packet *p = new Packet(buffer);
             //     map[cliaddr]->receivePacket(p);
             // }
-
-            printf("Client : %s\n", buffer);
+            std::cout << s << std::endl;
         }
     }
 }

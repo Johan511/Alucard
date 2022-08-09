@@ -29,6 +29,11 @@ __U16_TYPE Packet::getSeqNum()
     return sequence_number;
 }
 
+__U16_TYPE Packet::getAckNum()
+{
+    return acknoledgement_number;
+}
+
 State::State(sockaddr_in cliaddr, __U16_TYPE intial_acknowledgement_number, __U16_TYPE intial_sequence_number)
 {
     this->cliaddr = cliaddr;
@@ -81,4 +86,15 @@ bool State::receivePacket(Packet *packet)
 
 State::~State()
 {
+}
+
+std::ostream &operator<<(std::ostream &out, State s)
+{
+    for (int i = 0; i < s.packets.size(); i++)
+    {
+        out << "Acknoledgement Number : " << s.packets[i]->getAckNum() << std::endl;
+        out << "Acknoledgement Number : " << s.packets[i]->getSeqNum() << std::endl;
+        out << "Acknoledgement Number : " << s.packets[i]->data << std::endl;
+    }
+    return out;
 }
