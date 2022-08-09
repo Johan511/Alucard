@@ -10,6 +10,8 @@
 #include <netinet/in.h>
 #include <sys/time.h> //FD_SET, FD_ISSET, FD_ZERO macros
 
+#include "./0_headers/state/map.h"
+
 #define TRUE 1
 #define FALSE 0
 #define PORT 3000
@@ -17,7 +19,7 @@
 int main()
 {
     int sockfd;
-    char buffer[255 + 16 + 1 + 16];
+    char buffer[255 + 2 + 2];
     struct sockaddr_in servaddr, cliaddr;
     socklen_t clilen = sizeof(cliaddr);
 
@@ -42,14 +44,28 @@ int main()
 
     int len, n;
     len = sizeof(cliaddr);
+    State s(cliaddr, 0, 0);
     while (1)
     {
         n = recvfrom(sockfd, (char *)buffer, 255,
                      MSG_WAITALL, (struct sockaddr *)&cliaddr,
                      &clilen);
 
-        buffer[n] = '\0';
+        if (n > 0)
+        {
+            buffer[n] = '\0';
+            s.receivePacket(new Packet(buffer));
+            // if (map.find(cliaddr) == map.end())
+            // {
+            //     map[cliaddr] = new State(cliaddr, 0, 0);
+            // }
+            // else
+            // {
+            //     Packet *p = new Packet(buffer);
+            //     map[cliaddr]->receivePacket(p);
+            // }
 
-                printf("Client : %s\n", buffer);
+            printf("Client : %s\n", buffer);
+        }
     }
 }
