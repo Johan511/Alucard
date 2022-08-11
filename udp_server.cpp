@@ -14,11 +14,12 @@
 #define TRUE 1
 #define FALSE 0
 #define PORT 3000
+#define MAXLINE 255 + 2 + 2
 
 int main()
 {
     int sockfd;
-    char buffer[255 + 2 + 2];
+    char buffer[MAXLINE];
     struct sockaddr_in servaddr, cliaddr;
     socklen_t clilen = sizeof(cliaddr);
 
@@ -53,7 +54,9 @@ int main()
         if (n > 0)
         {
             buffer[n] = '\0';
-            s.receivePacket(new Packet(buffer));
+            Packet *p = new Packet(buffer);
+            // std::cout << p->getSeqNum() << std::endl;
+            s.receivePacket(p);
             // if (map.find(cliaddr) == map.end())
             // {
             //     map[cliaddr] = new State(cliaddr, 0, 0);
@@ -63,7 +66,7 @@ int main()
             //     Packet *p = new Packet(buffer);
             //     map[cliaddr]->receivePacket(p);
             // }
-            std::cout << s << std::endl;
         }
+        std::cout << s << std::endl;
     }
 }

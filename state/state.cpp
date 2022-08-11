@@ -2,8 +2,10 @@
 
 Packet::Packet(char datagram[2 + 2 + N]) : ACKd(false)
 {
-    this->acknoledgement_number = ((__UINT8_TYPE__)datagram[0] << 8) + ((__UINT8_TYPE__)datagram[1]);
-    this->sequence_number = ((__UINT8_TYPE__)datagram[2] << 8) + ((__UINT8_TYPE__)datagram[3]);
+    this->acknoledgement_number = ((__UINT16_TYPE__)datagram[0] << 8) + ((__UINT16_TYPE__)datagram[1]);
+    this->sequence_number = ((__UINT16_TYPE__)datagram[2] << 8) + ((__UINT16_TYPE__)datagram[3]);
+    // std::cout << datagram << std::endl;
+    fflush(stdout);
     // 8 bit integer only goes till 255, so <256 makes no sense => loops back to 0
     __UINT8_TYPE__ i = 0;
     for (; (i < N - 1) && (datagram[i + 4] != '\0'); i++)
@@ -11,7 +13,7 @@ Packet::Packet(char datagram[2 + 2 + N]) : ACKd(false)
         this->data[i] = datagram[4 + i];
     }
     data[i] = '\0';
-    data[255] = datagram[2 + 2 + N - 1];
+    data[N - 1] = datagram[2 + 2 + N - 1];
 }
 
 Packet::~Packet()
@@ -93,8 +95,8 @@ std::ostream &operator<<(std::ostream &out, State s)
     for (int i = 0; i < s.packets.size(); i++)
     {
         out << "Acknoledgement Number : " << s.packets[i]->getAckNum() << std::endl;
-        out << "Acknoledgement Number : " << s.packets[i]->getSeqNum() << std::endl;
-        out << "Acknoledgement Number : " << s.packets[i]->data << std::endl;
+        out << "Sequence Number : " << s.packets[i]->getSeqNum() << std::endl;
+        out << "Data : " << s.packets[i]->data << std::endl;
     }
     return out;
 }

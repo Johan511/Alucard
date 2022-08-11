@@ -1,4 +1,4 @@
-udp_server.cpp: udp_server.o map.o state.o
+main.out: udp_server.o map.o state.o
 	g++   -o main.out udp_server.o map.o state.o
 
 udp_server.o:
