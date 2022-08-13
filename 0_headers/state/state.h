@@ -5,22 +5,21 @@
 #include <stdint.h>
 #include <netinet/in.h>
 #include <iostream>
-#include <set>
+#include <bits/stdc++.h>
 
 #define N 256
 class State;
 class Packet
 {
     friend std::ostream &operator<<(std::ostream &out, State s);
-    friend std::set<Packet>;
+    friend std::less<Packet>;
 
 private:
-    bool
-    operator<(Packet const &packet2);
     bool ACKd;
     __UINT16_TYPE__ acknoledgement_number;
     __UINT16_TYPE__ sequence_number;
     char *data = new char[N];
+    bool operator<(Packet const &packet2) const;
 
 public:
     __UINT16_TYPE__ getAckNum();
