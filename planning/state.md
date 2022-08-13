@@ -1,0 +1,2 @@
+- check if vector is empty. If empty then add the element to the vector and update the sequence number
+- if vector not empty => check seq number => compare with initial sequence number

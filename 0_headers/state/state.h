@@ -1,17 +1,22 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <set>
 #include <stdint.h>
 #include <netinet/in.h>
 #include <iostream>
+#include <set>
 
 #define N 256
 class State;
 class Packet
 {
     friend std::ostream &operator<<(std::ostream &out, State s);
+    friend std::set<Packet>;
 
 private:
+    bool
+    operator<(Packet const &packet2);
     bool ACKd;
     __UINT16_TYPE__ acknoledgement_number;
     __UINT16_TYPE__ sequence_number;
@@ -34,6 +39,7 @@ class State
 
 private:
     std::vector<Packet *> packets;
+    std::set<Packet> packets_set;
     struct sockaddr_in cliaddr;
     __UINT8_TYPE__ number_of_buffered_packets;
     __UINT16_TYPE__ initial_acknoledgement_number;

@@ -43,6 +43,11 @@ State::State(sockaddr_in cliaddr, __U16_TYPE intial_acknowledgement_number, __U1
     this->initial_sequence_number = initial_sequence_number;
     this->final_acknoledgement_number = initial_acknoledgement_number;
     this->final_sequence_number = final_sequence_number;
+    for (__UINT8_TYPE__ i = 0; i < N - 1; i++)
+    {
+        packets.push_back(NULL);
+    }
+    packets.push_back(NULL);
 }
 
 bool State::receivePacket(Packet *packet)
@@ -99,4 +104,16 @@ std::ostream &operator<<(std::ostream &out, State s)
         out << "Data : " << s.packets[i]->data << std::endl;
     }
     return out;
+}
+
+bool Packet::operator<(Packet const &packet2)
+{
+    if (this->sequence_number < packet2.sequence_number)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
 }

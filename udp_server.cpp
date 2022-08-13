@@ -45,28 +45,42 @@ int main()
     int len, n;
     len = sizeof(cliaddr);
     State s(cliaddr, 0, 0);
-    while (1)
-    {
-        n = recvfrom(sockfd, (char *)buffer, 255,
-                     MSG_WAITALL, (struct sockaddr *)&cliaddr,
-                     &clilen);
+    // while (1)
+    // {
+    //     n = recvfrom(sockfd, (char *)buffer, 255,
+    //                  MSG_WAITALL, (struct sockaddr *)&cliaddr,
+    //                  &clilen);
 
-        if (n > 0)
-        {
-            buffer[n] = '\0';
-            Packet *p = new Packet(buffer);
-            // std::cout << p->getSeqNum() << std::endl;
-            s.receivePacket(p);
-            // if (map.find(cliaddr) == map.end())
-            // {
-            //     map[cliaddr] = new State(cliaddr, 0, 0);
-            // }
-            // else
-            // {
-            //     Packet *p = new Packet(buffer);
-            //     map[cliaddr]->receivePacket(p);
-            // }
-        }
-        std::cout << s << std::endl;
-    }
+    //     if (n > 0)
+    //     {
+    //         buffer[n] = '\0';
+    //         Packet *p = new Packet(buffer);
+    //         // std::cout << p->getSeqNum() << std::endl;
+    //         s.receivePacket(p);
+    //         // if (map.find(cliaddr) == map.end())
+    //         // {
+    //         //     map[cliaddr] = new State(cliaddr, 0, 0);
+    //         // }
+    //         // else
+    //         // {
+    //         //     Packet *p = new Packet(buffer);
+    //         //     map[cliaddr]->receivePacket(p);
+    //         // }
+    //     }
+    //     std::cout << s << std::endl;
+    // }
+    // char b1[MAXLINE];
+    // b1[0] = 'a';
+    // b1[1] = 'a';
+    // b1[2] = 'a';
+    // b1[3] = 'a';
+
+    // char b2[MAXLINE];
+    // b2[0] = 'b';
+    // b2[1] = 'b';
+    // b2[2] = 'b';
+    // b2[3] = 'b';
+    // Packet p1(b1);
+    // Packet p2(b2);
+    // std::cout << (p1 < p2) << std::endl;
 }
