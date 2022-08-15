@@ -15,22 +15,36 @@ Packet::Packet(char datagram[2 + 2 + N]) : ACKd(false)
     data[N - 1] = datagram[2 + 2 + N - 1];
 }
 
+// Packet::Packet(const Packet &original_packet)
+// {
+//     ACKd = original_packet.isACKd();
+//     acknoledgement_number = original_packet.getAckNum();
+//     sequence_number = original_packet.getSeqNum();
+// }
+
 Packet::~Packet()
 {
-    delete (this->data);
+    // not delocating memory remember that in case of any memory leak
+    // we need to overlaod copy constructor to do hard copy
 }
 
-bool Packet::isACKd()
+bool Packet::updateACK(bool to)
+{
+    this->ACKd = to;
+    return true;
+}
+
+bool Packet::isACKd() const
 {
     return this->ACKd;
 }
 
-__U16_TYPE Packet::getSeqNum()
+__U16_TYPE Packet::getSeqNum() const
 {
     return sequence_number;
 }
 
-__U16_TYPE Packet::getAckNum()
+__U16_TYPE Packet::getAckNum() const
 {
     return acknoledgement_number;
 }
@@ -49,6 +63,7 @@ bool State::receivePacket(Packet *packet)
     if ((packet->getSeqNum() > final_sequence_number))
     {
         packets_set.insert(*packet);
+        delete packet;
     }
 
     return true;

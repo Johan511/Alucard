@@ -22,11 +22,13 @@ private:
     bool operator<(Packet const &packet2) const;
 
 public:
-    __UINT16_TYPE__ getAckNum();
-    __UINT16_TYPE__ getSeqNum();
-    bool isACKd();
-    std::string getData();
+    __UINT16_TYPE__ getAckNum() const;
+    __UINT16_TYPE__ getSeqNum() const;
+    bool isACKd() const;
+    bool updateACK(bool to);
+    std::string getData() const;
 
+    // Packet(const Packet &original_packet);
     Packet(char datagram[2 + 2 + N]);
     ~Packet();
 
@@ -53,6 +55,4 @@ public:
     bool receivePacket(Packet packet);
 
     ~State();
-
-protected:
 };

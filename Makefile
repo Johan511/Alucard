@@ -12,3 +12,6 @@ state.o: ./state/state.cpp ./0_headers/state/state.h
 
 clean:
 	rm *.o *.i *.out
+
+run:
+	make && rm *.o *.i

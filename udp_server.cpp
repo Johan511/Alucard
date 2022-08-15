@@ -55,7 +55,7 @@ int main()
         {
             buffer[n] = '\0';
             Packet *p = new Packet(buffer);
-            s.receivePacket(new Packet(buffer));
+            s.receivePacket(p);
         }
     }
     // char b1[MAXLINE];
