@@ -28,7 +28,7 @@ Packet::~Packet()
     // we need to overlaod copy constructor to do hard copy
 }
 
-bool Packet::updateACK(bool to)
+bool Packet::updateACK(bool to) const
 {
     this->ACKd = to;
     return true;
@@ -60,11 +60,23 @@ State::State(sockaddr_in cliaddr, __U16_TYPE intial_acknowledgement_number, __U1
 
 bool State::receivePacket(Packet *packet)
 {
-    if ((packet->getSeqNum() > final_sequence_number))
+    if ((packet->getSeqNum() > final_sequence_number) || packets_set.size() == 0)
     {
         packets_set.insert(*packet);
-        delete packet;
+        final_sequence_number = packets_set.rbegin()->getSeqNum();
     }
+
+    auto it = std::find_if(packets_set.begin(), packets_set.end(), [packet](auto it)
+                           { return (it.getSeqNum() == packet->getAckNum()) ? true : false; });
+    // linear time, think about it again
+    it->updateACK(true);
+
+    while (packets_set.begin()->isACKd() == true)
+    {
+        packets_set.erase(packets_set.begin());
+    }
+
+    delete packet;
 
     return true;
 }
@@ -95,3 +107,15 @@ bool Packet::operator<(Packet const &packet2) const
         return false;
     }
 }
+
+// bool Packet::operator==(__UINT16_TYPE__ sequence_number) const
+// {
+//     if (this->sequence_number == sequence_number)
+//     {
+//         return true;
+//     }
+//     else
+//     {
+//         return false;
+//     }
+// }

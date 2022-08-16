@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <string>
-#include <set>
 #include <stdint.h>
 #include <netinet/in.h>
 #include <iostream>
@@ -15,17 +14,18 @@ class Packet
     friend std::less<Packet>;
 
 private:
-    bool ACKd;
+    mutable bool ACKd;
     __UINT16_TYPE__ acknoledgement_number;
     __UINT16_TYPE__ sequence_number;
     char *data = new char[N];
     bool operator<(Packet const &packet2) const;
 
 public:
+    // bool operator==(__UINT16_TYPE__ sequence_number) const;
     __UINT16_TYPE__ getAckNum() const;
     __UINT16_TYPE__ getSeqNum() const;
     bool isACKd() const;
-    bool updateACK(bool to);
+    bool updateACK(bool to) const;
     std::string getData() const;
 
     // Packet(const Packet &original_packet);
