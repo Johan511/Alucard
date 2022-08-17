@@ -28,6 +28,8 @@ public:
     bool updateACK(bool to) const;
     std::string getData() const;
 
+    char *getDataPointer() const;
+
     // Packet(const Packet &original_packet);
     Packet(char datagram[2 + 2 + N]);
     ~Packet();
@@ -39,8 +41,10 @@ class State
     friend std::ostream &operator<<(std::ostream &out, State s);
 
 private:
+    int sockfd;
     std::vector<Packet *> packets;
     std::set<Packet> packets_set;
+    std::set<Packet> send_set;
     struct sockaddr_in cliaddr;
     __UINT8_TYPE__ number_of_buffered_packets;
     __UINT16_TYPE__ initial_acknoledgement_number;
@@ -52,6 +56,9 @@ private:
 public:
     State(struct sockaddr_in cliaddr, __U16_TYPE intial_acknowledgement_number, __U16_TYPE intial_sequence_number);
     bool receivePacket(Packet *packet);
+    bool sendPacket(std::string &data);
+    bool set_sockfd(int sockfd);
+    bool sendPacket(__UINT16_TYPE__ sequence_number);
     bool receivePacket(Packet packet);
 
     ~State();

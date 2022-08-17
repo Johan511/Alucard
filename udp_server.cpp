@@ -45,6 +45,7 @@ int main()
     int len, n;
     len = sizeof(cliaddr);
     State s(cliaddr, 0, 0);
+    s.set_sockfd(sockfd);
     while (1)
     {
         n = recvfrom(sockfd, (char *)buffer, 255,

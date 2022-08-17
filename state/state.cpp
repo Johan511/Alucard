@@ -1,4 +1,5 @@
 #include "../0_headers/state/state.h"
+#include "sys/socket.h"
 
 Packet::Packet(char datagram[2 + 2 + N]) : ACKd(false)
 {
@@ -49,6 +50,11 @@ __U16_TYPE Packet::getAckNum() const
     return acknoledgement_number;
 }
 
+char *Packet::getDataPointer() const
+{
+    return this->data;
+}
+
 State::State(sockaddr_in cliaddr, __U16_TYPE intial_acknowledgement_number, __U16_TYPE intial_sequence_number)
 {
     this->cliaddr = cliaddr;
@@ -56,6 +62,45 @@ State::State(sockaddr_in cliaddr, __U16_TYPE intial_acknowledgement_number, __U1
     this->initial_sequence_number = initial_sequence_number;
     this->final_acknoledgement_number = initial_acknoledgement_number;
     this->final_sequence_number = final_sequence_number;
+}
+
+bool State::sendPacket(std::string &data)
+{
+    __UINT16_TYPE__ acknoledgement_number = packets_set.begin()->getSeqNum();
+    __UINT16_TYPE__ sequence_number = send_set.rbegin()->getSeqNum() + N;
+    char buffer[N + 2 + 2] = {};
+    if (data.size() > 256)
+    {
+    }
+    else
+    {
+        buffer[0] = (char)(acknoledgement_number >> 8);
+        buffer[1] = (char)((acknoledgement_number << 8) >> 8);
+        buffer[2] = (char)(sequence_number >> 8);
+        buffer[3] = (char)((sequence_number << 8) >> 8);
+        for (int i = 0; i < data.size(); i++)
+        {
+            buffer[4 + i] = data[i];
+        }
+    }
+    Packet *p = new Packet(buffer);
+
+    send_set.insert((Packet)*p);
+
+    sendto(this->sockfd, (char *)buffer, N,
+           MSG_CONFIRM, (const struct sockaddr *)&(this->cliaddr),
+           sizeof(this->cliaddr));
+
+    delete p;
+}
+
+bool State::sendPacket(__UINT16_TYPE__ sequence_number)
+{
+    auto it = std::find_if(send_set.begin(), send_set.end(), [sequence_number](auto it)
+                           { return (it.getSeqNum() == sequence_number) ? true : false });
+    sendto(this->sockfd, (char *)it->getDataPointer(), N,
+           MSG_CONFIRM, (const struct sockaddr *)&(this->cliaddr),
+           sizeof(this->cliaddr));
 }
 
 bool State::receivePacket(Packet *packet)
@@ -73,6 +118,8 @@ bool State::receivePacket(Packet *packet)
 
     while (packets_set.begin()->isACKd() == true)
     {
+        // destructor does not destroy the char array, we do a soft copy and insert into packets_set
+        delete ((this->packets_set).begin()->getDataPointer());
         packets_set.erase(packets_set.begin());
     }
 
@@ -106,6 +153,11 @@ bool Packet::operator<(Packet const &packet2) const
     {
         return false;
     }
+}
+
+bool State::set_sockfd(int sockfd)
+{
+    this->sockfd = sockfd;
 }
 
 // bool Packet::operator==(__UINT16_TYPE__ sequence_number) const
